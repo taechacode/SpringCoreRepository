@@ -9,7 +9,7 @@ import hello.core.member.MemoryMemberRepository;
 
 public class OrderServiceImpl implements OrderService {
 
-    private final MemberRepository memberRepository = new MemoryMemberRepository();
+
 
     // OrderServiceImpl는 DiscountPolicy 인터페이스만 의존하는 것이 아니라 구현 클래스도 의존하고 있다.
     // 만약 정액(FixDiscountPolicy)에서 정률(RateDiscountPolicy) 정책으로 바꾸려면 코드를 변경해야 함.
@@ -19,10 +19,22 @@ public class OrderServiceImpl implements OrderService {
     // 만약 인터페이스에만 의존하게 만들어버리면?
     // private DiscountPolicy discountPolicy; (구현체가 없어서 NullPointerException 발생)
 
-    // 이 문제를 해결하려면 클라이언트인 OrderServiceImpl에 DiscountPolicy의 구현 객체를 대신 생성하고 주입해주어야 함.
+    // 이 문제를 해결하려면 클라이언트인 OrderServiceImpl에 DiscountPolicy의 구현 객체를 대신 생성하고 주입해주어야 함. -> AppConfig로 해결
 
     // private final DiscountPolicy discountPolicy = new FixDiscountPolicy();
-    private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
+    // private final DiscountPolicy discountPolicy = new RateDiscountPolicy();
+
+    // MemberRepository 또한 구현체까지 의존한다.
+    // private final MemberRepository memberRepository = new MemoryMemberRepository();
+
+    // AppConfig을 통해 외부에서 구현 클래스를 주입해준다.
+    private final MemberRepository memberRepository;
+    private final DiscountPolicy discountPolicy;
+
+    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
 
     @Override
     public Order createOrder(Long memberId, String itemName, int itemPrice) {
