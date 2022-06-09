@@ -9,8 +9,6 @@ import hello.core.member.MemoryMemberRepository;
 
 public class OrderServiceImpl implements OrderService {
 
-
-
     // OrderServiceImpl는 DiscountPolicy 인터페이스만 의존하는 것이 아니라 구현 클래스도 의존하고 있다.
     // 만약 정액(FixDiscountPolicy)에서 정률(RateDiscountPolicy) 정책으로 바꾸려면 코드를 변경해야 함.
     // 인터페이스만 의존하지 않으므로 DIP 위반.
