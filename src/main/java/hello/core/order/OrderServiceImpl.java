@@ -6,10 +6,12 @@ import hello.core.discount.RateDiscountPolicy;
 import hello.core.member.Member;
 import hello.core.member.MemberRepository;
 import hello.core.member.MemoryMemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor // 자신의 객체에 final에 붙은 필드를 기준으로 생성자를 만들어준다. (생성자 주입 방식)
 public class OrderServiceImpl implements OrderService {
 
     // OrderServiceImpl는 DiscountPolicy 인터페이스만 의존하는 것이 아니라 구현 클래스도 의존하고 있다.
@@ -31,12 +33,30 @@ public class OrderServiceImpl implements OrderService {
     // AppConfig을 통해 외부에서 구현 클래스를 주입해준다.
     private final MemberRepository memberRepository;
     private final DiscountPolicy discountPolicy;
+    
+    // 필드 주입 방식
+    // @Autowired private MemberRepository memberRepository;
+    // @Autowired private DiscountPolicy discountPolicy;
 
-    @Autowired
-    public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
-        this.memberRepository = memberRepository;
-        this.discountPolicy = discountPolicy;
-    }
+    // @Autowired
+    // public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
+        // this.memberRepository = memberRepository;
+        // this.discountPolicy = discountPolicy;
+    // }
+    
+    // 수정자 방식
+    // private MemberRepository memberRepository;
+    // private DiscountPolicy discountPolicy;
+    
+    // @Autowired
+    // public void setMemberRepository(MemberRepository memberRepository) {
+        // this.memberRepository = memberRepository;
+    // }
+
+    // @Autowired
+    // public void setDiscountPolicy(DiscountPolicy discountPolicy) {
+        // this.discountPolicy = discountPolicy;
+    // }
 
     @Override
     public Order createOrder(Long memberId, String itemName, int itemPrice) {
