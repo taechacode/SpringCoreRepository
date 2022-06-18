@@ -1,5 +1,6 @@
 package hello.core.order;
 
+import hello.core.annotation.MainDiscountPolicy;
 import hello.core.discount.DiscountPolicy;
 import hello.core.discount.FixDiscountPolicy;
 import hello.core.discount.RateDiscountPolicy;
@@ -8,10 +9,11 @@ import hello.core.member.MemberRepository;
 import hello.core.member.MemoryMemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor // 자신의 객체에 final에 붙은 필드를 기준으로 생성자를 만들어준다. (생성자 주입 방식)
+// @RequiredArgsConstructor // 자신의 객체에 final에 붙은 필드를 기준으로 생성자를 만들어준다. (생성자 주입 방식)
 public class OrderServiceImpl implements OrderService {
 
     // OrderServiceImpl는 DiscountPolicy 인터페이스만 의존하는 것이 아니라 구현 클래스도 의존하고 있다.
@@ -38,11 +40,14 @@ public class OrderServiceImpl implements OrderService {
     // @Autowired private MemberRepository memberRepository;
     // @Autowired private DiscountPolicy discountPolicy;
 
-    // @Autowired
-    // public OrderServiceImpl(MemberRepository memberRepository, DiscountPolicy discountPolicy) {
-        // this.memberRepository = memberRepository;
-        // this.discountPolicy = discountPolicy;
-    // }
+    @Autowired
+    // @Qualifier는 "mainDiscountPolicy"로 @Qualifier가 지정된 빈을 찾아서 주입 (현재는 RateDiscountPolicy에 지정되어 있음)
+    // 만약 @Qualifier("mainDiscountPolicy")를 못찾으면? -> mainDiscountPolicy라는 이름의 스프링 빈을 추가로 찾는다.
+    //public OrderServiceImpl(MemberRepository memberRepository, @Qualifier("mainDiscountPolicy") DiscountPolicy discountPolicy) {
+    public OrderServiceImpl(MemberRepository memberRepository, @MainDiscountPolicy DiscountPolicy discountPolicy) {
+        this.memberRepository = memberRepository;
+        this.discountPolicy = discountPolicy;
+    }
     
     // 수정자 방식
     // private MemberRepository memberRepository;
